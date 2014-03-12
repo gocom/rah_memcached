@@ -1,0 +1,3 @@
+h1. rah_memcached
+
+p. A plugin for "Textpattern CMS":http://www.textpattern.com. Store parts of your templates in Memcached.
