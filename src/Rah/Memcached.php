@@ -60,7 +60,7 @@ class Rah_Memcached extends Memcached
      * {@inheritdoc}
      */
 
-    public function addServer($host , $port)
+    public function addServer($host , $port, $weight = 0)
     {
         $servers = $this->memcached->getServerList();
 
@@ -88,7 +88,7 @@ class Rah_Memcached extends Memcached
      * {@inheritdoc}
      */
 
-    public function get($key)
+    public function get($key, $cache_cb = null, &$cas_token = null)
     {
         return parent::get($this->rahKeyPrefix . $key);
     }
