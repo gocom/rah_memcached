@@ -9,7 +9,7 @@
     "flags": 2,
     "help": {"file" : ["./README.textile"]},
     "code": {"file" : [
-        "./src/Rah/Memcached/Memcached.php",
+        "./src/Rah/Memcached.php",
         "./src/Rah/Memcached/Tag.php"
     ]}
 }
