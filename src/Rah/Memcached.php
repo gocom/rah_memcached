@@ -81,7 +81,7 @@ class Rah_Memcached extends Memcached
 
     public function set($key, $value, $expiration = 0)
     {
-        return parent::get($this->rahKeyPrefix . $key, $value, $expiration);
+        return parent::set($this->rahKeyPrefix . $key, $value, $expiration);
     }
 
     /**
