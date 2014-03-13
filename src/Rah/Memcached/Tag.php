@@ -42,15 +42,33 @@
  * <code>
  * <txp:rah_memcached name="section_nav" />
  * </code>
+ *
+ * The tag can also be used to store variables in the memory,
+ * skipping template execution and recreating the variables from
+ * the state kept in memory.
+ *
+ * <code>
+ * <txp:rah_memcached store="variables">
+ *  <txp:variable name="variable1" value="value 1" />
+ *  <txp:variable name="variable2" value="value 2" />
+ * </txp:rah_memcached>
+ * </code>
+ *
+ * A variable is stored if its updated or created within the
+ * rah_memcached statement. Be aware, if a value of an existing
+ * variable does not change, it is not kept in memory, leading into
+ * potential issues.
  */
 
 function rah_memcached($atts, $thing = null)
 {
+    global $variable;
     static $memcached = null;
 
     extract(lAtts(array(
         'expires' => 3600,
         'name'    => null,
+        'store'   => 'markup',
     ), $atts));
 
     if ($memcached === null) {
@@ -64,11 +82,35 @@ function rah_memcached($atts, $thing = null)
             return '';
         }
 
-        return (string) $memcached->get($name);
+        $value = $memcached->get($name);
+
+        if (is_array($value)) {
+            $variable = array_merge($variable, $value);
+            return '';
+        }
+
+        return (string) $value;
     }
 
     if (($value = $memcached->get($name)) !== false) {
         return $value;
+    }
+
+    // Stores variables in memory as an serialized array.
+
+    if ($store === 'variables') {
+        $storable = array();
+        $existing = $variable;
+        parse($thing);
+
+        foreach ($variable as $name => $value) {
+            if (!isset($existing[$name]) || (string) $existing[$name] !== (string) $value) {
+                $storable[(string) $name] = (string) $value;
+            }
+        }
+
+        $memcached->set($name, $storable, (int) $expires);
+        return '';
     }
 
     $value = (string) parse($thing);
