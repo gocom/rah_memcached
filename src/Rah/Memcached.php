@@ -51,7 +51,7 @@ class Rah_Memcached extends Memcached
 
     public function __construct()
     {
-        $this->rahKeyPrefix = 'Rah:Textpattern:'.get_pref('version').':'.get_pref('siteurl').':';
+        $this->rahKeyPrefix = 'Rah:'.get_pref('siteurl').':';
         parent::__construct();
         $this->addServer(RAH_MEMCACHED_HOST, RAH_MEMCACHED_PORT);
     }
