@@ -62,7 +62,7 @@ class Rah_Memcached extends Memcached
 
     public function addServer($host , $port, $weight = 0)
     {
-        $servers = $this->memcached->getServerList();
+        $servers = $this->getServerList();
 
         if (is_array($servers)) {
             foreach ($servers as $server) {
@@ -72,7 +72,7 @@ class Rah_Memcached extends Memcached
             }
         }
 
-        return $this->memcached->addServer($host , $port);
+        return parent::addServer($host , $port);
     }
 
     /**
@@ -95,5 +95,24 @@ class Rah_Memcached extends Memcached
     public function get($key, $cache_cb = null, &$cas_token = null)
     {
         return parent::get($this->rahKeyPrefix . $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+
+    public function flush($delay = 0)
+    {   
+        $keys = $this->getAllKeys();
+
+        if (is_array($keys)) {
+            foreach ($keys as $key) {
+                if (strpos($key, $this->rahKeyPrefix) === 0) {
+                    parent::delete($key, $delay);
+                }
+            }
+        }
+
+        return true;
     }
 }
