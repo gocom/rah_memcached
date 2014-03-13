@@ -57,10 +57,6 @@ function rah_memcached($atts, $thing = null)
         $memcached = new Rah_Memcached();
     }
 
-    if ($name === null) {
-        $name = md5($thing);
-    }
-
     if ($thing === null) {
 
         if (!$name) {
