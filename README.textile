@@ -1,6 +1,6 @@
 h1. rah_memcached
 
-p. A plugin for "Textpattern CMS":http://www.textpattern.com. Store parts of your templates in Memcached.
+A plugin for "Textpattern CMS":http://www.textpattern.com. Store parts of your templates in "Memcached":http://memcached.org/.
 
 *This readme and repository is work in progress.*
 
@@ -13,15 +13,19 @@ h2. Requirements
 
 h2. Install
 
+Using "Composer":https://getcomposer.org:
+
 bc. $ composer require rah/rah_memcached
 
-h2. Install Memcached and PHP Memcached extension
+h3. External dependencies
 
-h3. On Ubuntu
+p. Install Memcached and the PHP Memcached extension.
+
+h4. On Ubuntu
 
 bc. $ apt-get install memcached php5-memcached
 
-h3. On Mac OS
+h4. On Mac OS
 
 bc. $ brew install libmemcached memcached
 $ pecl install memcached
