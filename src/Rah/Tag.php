@@ -53,16 +53,21 @@ function rah_memcached($atts, $thing = null)
         'name'    => null,
     ), $atts));
 
-    if (!$name) {
-        trigger_error(gTxt('invalid_attribute_value', array('{name}' => 'name')));
-        return '';
-    }
-
     if ($memcached === null) {
         $memcached = new Rah_Memcached();
     }
 
+    if ($name === null) {
+        $name = md5($thing);
+    }
+
     if ($thing === null) {
+
+        if (!$name) {
+            trigger_error(gTxt('invalid_attribute_value', array('{name}' => 'name')));
+            return '';
+        }
+
         return (string) $memcached->get($name);
     }
 
