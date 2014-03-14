@@ -53,7 +53,19 @@ class Rah_Memcached extends Memcached
     {
         $this->rahKeyPrefix = 'Rah:'.get_pref('siteurl').':';
         parent::__construct();
-        $this->addServer(RAH_MEMCACHED_HOST, RAH_MEMCACHED_PORT);
+
+        $host = 'localhost';
+        $port = 11211;
+
+        if (defined('RAH_MEMCACHED_HOST')) {
+            $host = (string) RAH_MEMCACHED_HOST;
+        }
+
+        if (defined('RAH_MEMCACHED_PORT')) {
+            $port = (int) RAH_MEMCACHED_PORT;
+        }
+
+        $this->addServer($host, $port);
     }
 
     /**
