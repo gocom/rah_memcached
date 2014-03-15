@@ -24,10 +24,6 @@
 /**
  * Stores template portions in Memcached.
  *
- * @param  array  $atts  Attributes
- * @param  string $thing Contained statement
- * @return string User markup
- *
  * <code>
  * <txp:rah_memcached name="section_nav">
  *  <txp:section_list>
@@ -58,6 +54,10 @@
  * rah_memcached statement. Be aware, if a value of an existing
  * variable does not change, it is not kept in memory, leading into
  * potential issues.
+ *
+ * @param  array  $atts  Attributes
+ * @param  string $thing Contained statement
+ * @return string User markup
  */
 
 function rah_memcached($atts, $thing = null)
