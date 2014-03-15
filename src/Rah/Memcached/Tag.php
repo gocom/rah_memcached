@@ -66,7 +66,7 @@ function rah_memcached($atts, $thing = null)
     static $memcached = null;
 
     extract(lAtts(array(
-        'expires' => 3600,
+        'expires' => 0,
         'name'    => null,
     ), $atts));
 
