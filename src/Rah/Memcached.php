@@ -78,7 +78,7 @@ class Rah_Memcached extends Memcached
 
         if (is_array($servers)) {
             foreach ($servers as $server) {
-                if ($server['host'] == $host and $server['port'] == $port) {
+                if ((string) $server['host'] === (string) $host && (int) $server['port'] === (int) $port) {
                     return true;
                 }
             }
