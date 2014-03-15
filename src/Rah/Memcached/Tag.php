@@ -69,7 +69,7 @@ function rah_memcached($atts, $thing = null)
     ), $atts));
 
     if ($name === null) {
-        $name = md5($thing);
+        $name = 'rah_memcached_hash:'.md5($thing);
     }
 
     if ($memcached === null) {
