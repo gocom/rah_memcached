@@ -64,6 +64,7 @@ function rah_memcached($atts, $thing = null)
 
     extract(lAtts(array(
         'expires' => 0,
+        'lastmod' => 1,
         'name'    => null,
     ), $atts));
 
@@ -78,7 +79,11 @@ function rah_memcached($atts, $thing = null)
     if (($cache = $memcached->get($name)) !== false) {
 
         if (is_array($cache)) {
-            $variable = array_merge($variable, $cache['variables']);
+
+            if ($cache['variables']) {
+                $variable = array_merge((array) $variable, $cache['variables']);
+            }
+
             return $cache['markup'];
         }
 
@@ -92,7 +97,12 @@ function rah_memcached($atts, $thing = null)
     $cache = array(
         'variables' => array(),
         'markup'    => '',
+        'lastmod'   => null,
     );
+
+    if ($lastmod) {
+        $cache['lastmod'] = get_pref('lastmod');
+    }
 
     $existingVariables = $variable;
     $cache['markup'] = (string) parse($thing);
@@ -107,7 +117,7 @@ function rah_memcached($atts, $thing = null)
         }
     }
 
-    if (!$cache['variables']) {
+    if (!$cache['variables'] && $cache['lastmod'] === null) {
         $memcached->set($name, $cache['markup'], (int) $expires);
     } else {
         $memcached->set($name, $cache, (int) $expires);

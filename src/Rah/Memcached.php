@@ -102,7 +102,13 @@ class Rah_Memcached extends Memcached
 
     public function get($key, $cache_cb = null, &$cas_token = null)
     {
-        return parent::get($this->rahKeyPrefix . $key);
+        $cache = parent::get($this->rahKeyPrefix . $key);
+
+        if (is_array($cache) && isset($cache['lastmod']) && $cache['lastmod'] !== get_pref('lastmod')) {
+            return false;
+        }
+
+        return $cache;
     }
 
     /**
