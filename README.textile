@@ -1,15 +1,28 @@
 h1. rah_memcached
 
-A plugin for "Textpattern CMS":http://www.textpattern.com. Store parts of your templates in "Memcached":http://memcached.org/.
+"Packagist":https://packagist.org/packages/rah/rah_memcached | "Twitter":http://twitter.com/gocom | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":http://rahforum.biz/donate/rah_memcached
 
-*This readme and repository is work in progress.*
+A plugin for "Textpattern CMS":http://www.textpattern.com that stores parts of your templates in "Memcached":http://memcached.org/, a distributed in-memory key-value caching system.
+
+h2. Basics
+
+The plugin, rah_memcached, introduces a new container tag to Textpattern's arsenal. The tag stores the wrapped content and "variables":http://www.textpattern.net/wiki/index.php?title=variable set within it, in Memcached's in-memory storage.
+
+bc. <txp:rah_memcached>
+    <txp:variable name="variable1" value="value" />
+    <txp:article_custom limit="200">
+        <txp:title />
+    </txp:article_custom>
+</txp:rah_memcached>
+
+On subsequent calls the resulting output markup and variables will be loaded from memory, skipping template parsing and code execution, speeding up your site and alleviating database load.
 
 h2. Requirements
 
 * Textpattern 4.4.0 or newer.
 * PHP 5.3.0 or newer.
-* "Memcached":http://www.php.net/manual/en/book.memcached.php extension.
-* "Memcached":http://memcached.org/.
+* "Memcached":http://www.php.net/manual/en/book.memcached.php extension and "libmemcached":http://libmemcached.org/ client library.
+* "Memcached":http://memcached.org/ server.
 
 h2. Install
 
@@ -19,7 +32,7 @@ bc. $ composer require rah/rah_memcached
 
 h3. External dependencies
 
-p. Install Memcached and the PHP Memcached extension.
+p. Install Memcached, libmemcached and the PHP Memcached extension.
 
 h4. On Ubuntu
 
@@ -29,6 +42,42 @@ h4. On Mac OS
 
 bc. $ brew install libmemcached memcached
 $ pecl install memcached
+
+h2. Attributes
+
+The tag is a container, @<txp:rah_memcached> ...contained statement... </txp:rah_memcached>@, and attributes for it follow.
+
+*expires*
+Time in seconds it takes to the stored item to expire and be refreshed. If zero (@0@), the cache is kept in memory until the cache is flushed or Memcached is restarted.
+Default: @0@ Example: @expires="3600"@
+
+*lastmod*
+If enabled, the item is refreshed on content updates.
+Default: @1@ Example: @lastmod="1"@
+
+*name*
+Sets a name, key, for the cached item. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoid any potential collisions.
+Default: _undefined_ Example: @name="key"@
+
+h2. Examples
+
+h3. Basic usage: store navigation in memory
+
+bc. <txp:rah_memcached name="section_nav">
+    <txp:section_list wraptag="ul" break="li">
+        <txp:section />
+    </txp:section_list>
+</txp:rah_memcached>
+
+h3. Store variables in memory
+
+bc.. <txp:rah_memcached>
+    <txp:variable name="color" value="red" />
+    <txp:variable name="size" value="small" />
+</txp:rah_memcached>
+
+Color: <txp:variable name="color" />
+Size: <txp:variable name="size" />
 
 h2. Changelog
 
