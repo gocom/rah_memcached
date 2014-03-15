@@ -48,7 +48,7 @@
  * the state kept in memory.
  *
  * <code>
- * <txp:rah_memcached store="variables">
+ * <txp:rah_memcached name="variables">
  *  <txp:variable name="variable1" value="value 1" />
  *  <txp:variable name="variable2" value="value 2" />
  * </txp:rah_memcached>
@@ -68,53 +68,53 @@ function rah_memcached($atts, $thing = null)
     extract(lAtts(array(
         'expires' => 3600,
         'name'    => null,
-        'store'   => 'markup',
     ), $atts));
+
+    if ($name === null) {
+        $name = md5($thing);
+    }
 
     if ($memcached === null) {
         $memcached = new Rah_Memcached();
     }
 
+    if (($cache = $memcached->get($name)) !== false) {
+
+        if (is_array($cache)) {
+            $variable = array_merge($variable, $cache['variables']);
+            return $cache['markup'];
+        }
+
+        return (string) $cache;
+    }
+
     if ($thing === null) {
-
-        if (!$name) {
-            trigger_error(gTxt('invalid_attribute_value', array('{name}' => 'name')));
-            return '';
-        }
-
-        $value = $memcached->get($name);
-
-        if (is_array($value)) {
-            $variable = array_merge($variable, $value);
-            return '';
-        }
-
-        return (string) $value;
-    }
-
-    if (($value = $memcached->get($name)) !== false) {
-        return $value;
-    }
-
-    // Stores variables in memory as an serialized array.
-
-    if ($store === 'variables') {
-        $storable = array();
-        $existing = $variable;
-        parse($thing);
-
-        foreach ($variable as $name => $value) {
-            if (!isset($existing[$name]) || (string) $existing[$name] !== (string) $value) {
-                $storable[(string) $name] = (string) $value;
-            }
-        }
-
-        $memcached->set($name, $storable, (int) $expires);
         return '';
     }
 
-    $value = (string) parse($thing);
-    $memcached->set($name, $value, (int) $expires);
+    $cache = array(
+        'variables' => array(),
+        'markup'    => '',
+    );
 
-    return $value;
+    $existingVariables = $variable;
+    $cache['markup'] = (string) parse($thing);
+
+    // Stores variables in memory as an serialized array.
+
+    if ($variable) {
+        foreach ($variable as $name => $value) {
+            if (!isset($existingVariables[$name]) || (string) $existingVariables[$name] !== (string) $value) {
+                $cache['variables'][(string) $name] = (string) $value;
+            }
+        }
+    }
+
+    if (!$cache['variables']) {
+        $memcached->set($name, $cache['markup'], (int) $expires);
+    } else {
+        $memcached->set($name, $cache, (int) $expires);
+    }
+
+    return $cache['markup'];
 }
