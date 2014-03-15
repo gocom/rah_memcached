@@ -22,7 +22,7 @@
  */
 
 /**
- * Stores template portions in Memcached.
+ * Stores template portions and variables in Memcached.
  *
  * <code>
  * <txp:rah_memcached name="section_nav">
@@ -32,15 +32,8 @@
  * </txp:rah_memcached>
  * </code>
  *
- * If used as a single tag, it fetched a value from the cache by
- * the key name.
- *
- * <code>
- * <txp:rah_memcached name="section_nav" />
- * </code>
- *
  * The tag can also be used to store variables in the memory,
- * skipping template execution and recreating the variables from
+ * skipping the variable execution and recreating the variables from
  * the state kept in memory.
  *
  * <code>
@@ -48,12 +41,16 @@
  *  <txp:variable name="variable1" value="value 1" />
  *  <txp:variable name="variable2" value="value 2" />
  * </txp:rah_memcached>
+ *
+ * Variable1: <txp:variable name="variable1" />
+ * Variable2: <txp:variable name="variable2" />
  * </code>
  *
- * A variable is stored if its updated or created within the
- * rah_memcached statement. Be aware, if a value of an existing
- * variable does not change, it is not kept in memory, leading into
- * potential issues.
+ * A variable's value is stored if its updated or created within the
+ * rah_memcached statement, skipping the value assignment execution, but
+ * still keeping the variable and its value available. Be aware,
+ * if a value of an existing variable does not change, it is not kept in
+ * memory.
  *
  * @param  array  $atts  Attributes
  * @param  string $thing Contained statement
