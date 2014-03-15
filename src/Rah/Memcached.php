@@ -93,10 +93,6 @@ class Rah_Memcached extends Memcached
 
     public function set($key, $value, $expiration = 0)
     {
-        if ($key === null) {
-            $key = md5((string) $value);
-        }
-
         return parent::set($this->rahKeyPrefix . $key, $value, $expiration);
     }
 
