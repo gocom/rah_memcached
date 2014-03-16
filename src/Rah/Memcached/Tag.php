@@ -83,6 +83,8 @@ function rah_memcached($atts, $thing = null)
 
     if (($cache = $memcached->get($name)) !== false) {
 
+        trace_add("[rah_memcached: '$name' found in cache]");
+
         if (is_array($cache)) {
 
             if (!empty($cache['variables'])) {
@@ -97,6 +99,8 @@ function rah_memcached($atts, $thing = null)
         }
 
         return (string) $cache;
+    } else {
+        trace_add("[rah_memcached: '$name' not found or expired. Status: ".$memcached->getResultCode()."]");
     }
 
     if ($thing === null) {
@@ -117,13 +121,19 @@ function rah_memcached($atts, $thing = null)
     $cache['markup'] = (string) parse($thing);
 
     if ($variable) {
-        foreach ($variable as $name => $value) {
-            if (!isset($existingVariables[$name]) || (string) $existingVariables[$name] !== (string) $value) {
-                $cache['variables'][(string) $name] = (string) $value;
+        foreach ($variable as $varName => $varValue) {
+            if (!isset($existingVariables[$varName]) || (string) $existingVariables[$varName] !== (string) $varValue) {
+                $cache['variables'][(string) $varName] = (string) $varValue;
+                trace_add("[rah_memcached: picked up variable '$varName' for storage]");
             }
         }
     }
 
-    $memcached->set($name, $cache, (int) $expires);
+    if ($memcached->set($name, $cache, (int) $expires) !== false) {
+        trace_add("[rah_memcached: stored item '$name']");
+    } else {
+        trace_add("[rah_memcached: failed to store '$name'. Status: ".$memcached->getResultCode()."]");
+    }
+
     return $cache['markup'];
 }
