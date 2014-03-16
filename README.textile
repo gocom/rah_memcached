@@ -56,14 +56,14 @@ If enabled, the item is refreshed on content updates.
 Default: @1@ Example: @lastmod="1"@
 
 *name*
-Sets a name, key, for the cached item. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoids any potential collisions.
-Default: _undefined_ Example: @name="key"@
+Sets a name, key, for the cached item. The name must consist of a namespace and a local name, separated by colon. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoids any potential collisions. Namespace is mandatory to make sure you use prefixes that prevent collisions and spoofing attacks when you use user-defined HTTP request data to construct page specific cached markup blocks.
+Default: _undefined_ Example: @name="namespace:key"@
 
 h2. Examples
 
 h3. Basic usage: store navigation in memory
 
-bc. <txp:rah_memcached name="section_nav">
+bc. <txp:rah_memcached name="site:section_nav">
     <txp:section_list wraptag="ul" break="li">
         <txp:section />
     </txp:section_list>

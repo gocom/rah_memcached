@@ -129,4 +129,23 @@ class Rah_Memcached extends Memcached
 
         return true;
     }
+
+    /**
+     * Whether the key is valid.
+     *
+     * A key must consist of namespace separated by a colon,
+     * and have between 3 and 64 characters.
+     *
+     * @param  string $key The key to validate
+     * @return bool   FALSE if invalid
+     */
+
+    public function isValidKey($key)
+    {
+        if (is_string($key) && strpos($key, ':')) {
+            return ($length = strlen($key)) && $length >= 3 && $length <= 64;
+        }
+
+        return false;
+    }
 }

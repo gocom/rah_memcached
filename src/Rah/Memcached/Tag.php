@@ -25,7 +25,7 @@
  * Stores template portions and variables in Memcached.
  *
  * <code>
- * <txp:rah_memcached name="section_nav">
+ * <txp:rah_memcached name="site:section_nav">
  *  <txp:section_list>
  *      <txp:section />
  *  </txp:section_list>
@@ -37,7 +37,7 @@
  * the state kept in memory.
  *
  * <code>
- * <txp:rah_memcached name="variables">
+ * <txp:rah_memcached name="site:variables">
  *  <txp:variable name="variable1" value="value 1" />
  *  <txp:variable name="variable2" value="value 2" />
  * </txp:rah_memcached>
@@ -68,23 +68,32 @@ function rah_memcached($atts, $thing = null)
         'name'    => null,
     ), $atts));
 
-    if ($name === null) {
+    if ($memcached === null) {
+        $memcached = new Rah_Memcached();
+    }
+
+    if ($name === null && $thing !== null) {
         $name = 'rah_memcached_hash:'.md5($thing);
     }
 
-    if ($memcached === null) {
-        $memcached = new Rah_Memcached();
+    if ($memcached->isValidKey($name) === false) {
+        trigger_error(gTxt('invalid_attribute_value', array('{name}' => 'name')));
+        return '';
     }
 
     if (($cache = $memcached->get($name)) !== false) {
 
         if (is_array($cache)) {
 
-            if ($cache['variables']) {
+            if (!empty($cache['variables'])) {
                 $variable = array_merge((array) $variable, $cache['variables']);
             }
 
-            return $cache['markup'];
+            if (isset($cache['markup'])) {
+                return $cache['markup'];
+            }
+
+            return '';
         }
 
         return (string) $cache;
@@ -107,8 +116,6 @@ function rah_memcached($atts, $thing = null)
     $existingVariables = $variable;
     $cache['markup'] = (string) parse($thing);
 
-    // Stores variables in memory as an serialized array.
-
     if ($variable) {
         foreach ($variable as $name => $value) {
             if (!isset($existingVariables[$name]) || (string) $existingVariables[$name] !== (string) $value) {
@@ -117,11 +124,6 @@ function rah_memcached($atts, $thing = null)
         }
     }
 
-    if (!$cache['variables'] && $cache['lastmod'] === null) {
-        $memcached->set($name, $cache['markup'], (int) $expires);
-    } else {
-        $memcached->set($name, $cache, (int) $expires);
-    }
-
+    $memcached->set($name, $cache, (int) $expires);
     return $cache['markup'];
 }
