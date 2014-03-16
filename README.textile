@@ -56,7 +56,7 @@ If enabled, the item is refreshed on content updates.
 Default: @1@ Example: @lastmod="1"@
 
 *name*
-Sets a name, key, for the cached item. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoid any potential collisions.
+Sets a name, key, for the cached item. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoids any potential collisions.
 Default: _undefined_ Example: @name="key"@
 
 h2. Examples
