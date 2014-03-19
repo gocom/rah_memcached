@@ -19,8 +19,8 @@ On subsequent calls the resulting output markup and variables will be loaded fro
 
 h2. Requirements
 
-* Textpattern 4.4.0 or newer.
-* PHP 5.3.0 or newer.
+* Textpattern 4.4.1 or newer.
+* PHP 5.2.0 or newer.
 * "Memcached":http://www.php.net/manual/en/book.memcached.php extension and "libmemcached":http://libmemcached.org/ client library.
 * "Memcached":http://memcached.org/ server.
 
