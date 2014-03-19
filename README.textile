@@ -1,6 +1,6 @@
 h1. rah_memcached
 
-"Packagist":https://packagist.org/packages/rah/rah_memcached | "Twitter":http://twitter.com/gocom | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":http://rahforum.biz/donate/rah_memcached
+"Download":https://github.com/gocom/rah_memcached/releases | "Packagist":https://packagist.org/packages/rah/rah_memcached | "Twitter":http://twitter.com/gocom | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":http://rahforum.biz/donate/rah_memcached
 
 A plugin for "Textpattern CMS":http://www.textpattern.com that stores parts of your templates in "Memcached":http://memcached.org/, a distributed in-memory key-value caching system.
 
@@ -29,6 +29,8 @@ h2. Install
 Using "Composer":https://getcomposer.org:
 
 bc. $ composer require rah/rah_memcached
+
+Or "download":https://github.com/gocom/rah_memcached/releases a plugin package.
 
 h3. External dependencies
 
@@ -81,6 +83,6 @@ Size: <txp:variable name="size" />
 
 h2. Changelog
 
-h3. Version 0.1.0 - upcoming
+h3. Version 0.1.0 - 2014/03/19
 
 * Initial release.
