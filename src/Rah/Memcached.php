@@ -165,4 +165,15 @@ class Rah_Memcached
 
         return false;
     }
+
+    /**
+     * Gets a message describing the result of the last operation.
+     *
+     * @return string
+     */
+
+    public function getResultMessage()
+    {
+        return $this->cache->getResultMessage();
+    }
 }

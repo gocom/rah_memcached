@@ -100,7 +100,7 @@ function rah_memcached($atts, $thing = null)
 
         return (string) $cache;
     } else {
-        trace_add("[rah_memcached: '$name' not found or expired. Status: ".$memcached->getResultCode()."]");
+        trace_add("[rah_memcached: '$name' not found or expired. Memcached said: '".$memcached->getResultMessage()."']");
     }
 
     if ($thing === null) {
@@ -132,7 +132,7 @@ function rah_memcached($atts, $thing = null)
     if ($memcached->set($name, $cache, (int) $expires) !== false) {
         trace_add("[rah_memcached: stored item '$name']");
     } else {
-        trace_add("[rah_memcached: failed to store '$name'. Status: ".$memcached->getResultCode()."]");
+        trace_add("[rah_memcached: failed to store '$name'. Memcached said: '".$memcached->getResultMessage()."']");
     }
 
     return $cache['markup'];
