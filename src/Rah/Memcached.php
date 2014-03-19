@@ -32,8 +32,16 @@
  * </code>
  */
 
-class Rah_Memcached extends Memcached
+class Rah_Memcached
 {
+    /**
+     * Stores a Memcached instance.
+     *
+     * @var Memcached
+     */
+
+    protected $cache;
+
     /**
      * A prefix used to seperate Textpattern installation keys from one another.
      *
@@ -43,16 +51,15 @@ class Rah_Memcached extends Memcached
      * @var string
      */
 
-    protected $rahKeyPrefix;
+    protected $prefix;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
      */
 
     public function __construct()
     {
-        $this->rahKeyPrefix = 'Rah:'.get_pref('siteurl').':';
-        parent::__construct();
+        $this->prefix = 'Rah:'.get_pref('siteurl').':';
 
         $host = 'localhost';
         $port = 11211;
@@ -65,7 +72,8 @@ class Rah_Memcached extends Memcached
             $port = (int) RAH_MEMCACHED_PORT;
         }
 
-        $this->addServer($host, $port);
+        $this->cache = new Memcached();
+        $this->cache->addServer($host, $port);
     }
 
     /**
@@ -74,7 +82,7 @@ class Rah_Memcached extends Memcached
 
     public function addServer($host , $port, $weight = 0)
     {
-        $servers = $this->getServerList();
+        $servers = $this->cache->getServerList();
 
         if (is_array($servers)) {
             foreach ($servers as $server) {
@@ -84,25 +92,32 @@ class Rah_Memcached extends Memcached
             }
         }
 
-        return parent::addServer($host , $port);
+        return $this->cache->addServer($host , $port);
     }
 
     /**
-     * {@inheritdoc}
+     * Sets a key.
+     *
+     * @param string $key        The key
+     * @param mixed  $value      The value
+     * @param int    $expiration The expiration in seconds
      */
 
     public function set($key, $value, $expiration = 0)
     {
-        return parent::set($this->rahKeyPrefix . $key, $value, $expiration);
+        return $this->cache->set($this->prefix . $key, $value, $expiration);
     }
 
     /**
-     * {@inheritdoc}
+     * Gets a key.
+     *
+     * @param  string $key The key
+     * @return mixed  The value, or FALSE on error 
      */
 
-    public function get($key, $cache_cb = null, &$cas_token = null)
+    public function get($key)
     {
-        $cache = parent::get($this->rahKeyPrefix . $key);
+        $cache = $this->cache->get($this->prefix . $key);
 
         if (is_array($cache) && isset($cache['lastmod']) && $cache['lastmod'] !== get_pref('lastmod')) {
             return false;
@@ -112,17 +127,19 @@ class Rah_Memcached extends Memcached
     }
 
     /**
-     * {@inheritdoc}
+     * Flushes cache.
+     *
+     * @return bool
      */
 
-    public function flush($delay = 0)
-    {   
-        $keys = $this->getAllKeys();
+    public function flush()
+    {
+        $keys = $this->cache->getAllKeys();
 
         if (is_array($keys)) {
             foreach ($keys as $key) {
-                if (strpos($key, $this->rahKeyPrefix) === 0) {
-                    parent::delete($key, $delay);
+                if (strpos($key, $this->prefix) === 0) {
+                    $this->cache->delete($key, $delay);
                 }
             }
         }
