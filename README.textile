@@ -4,6 +4,14 @@ h1. rah_memcached
 
 A plugin for "Textpattern CMS":http://www.textpattern.com that stores parts of your templates in "Memcached":http://memcached.org/, a distributed in-memory key-value caching system.
 
+h2. Install
+
+Using "Composer":https://getcomposer.org:
+
+bc. $ composer require rah/rah_memcached:*
+
+Or "download":https://github.com/gocom/rah_memcached/releases a plugin package.
+
 h2. Basics
 
 The plugin, rah_memcached, introduces a new container tag to Textpattern's arsenal. The tag stores the wrapped content and "variables":http://www.textpattern.net/wiki/index.php?title=variable set within it, in Memcached's in-memory storage.
@@ -21,29 +29,27 @@ h2. Requirements
 
 * Textpattern 4.4.1 or newer.
 * PHP 5.2.0 or newer.
-* "Memcached":http://www.php.net/manual/en/book.memcached.php extension and "libmemcached":http://libmemcached.org/ client library.
+* "Memcached":http://www.php.net/manual/en/book.memcached.php PHP extension.
+* "libmemcached":http://libmemcached.org/ client library.
 * "Memcached":http://memcached.org/ server.
 
-h2. Install
+h2. Install external dependencies
 
-Using "Composer":https://getcomposer.org:
+To use the plugin you will must install Memcached, libmemcached and the PHP Memcached extension.
 
-bc. $ composer require rah/rah_memcached
+h3. On Ubuntu and Debian
 
-Or "download":https://github.com/gocom/rah_memcached/releases a plugin package.
-
-h3. External dependencies
-
-p. Install Memcached, libmemcached and the PHP Memcached extension.
-
-h4. On Ubuntu
+Using apt-get:
 
 bc. $ apt-get install memcached php5-memcached
 
-h4. On Mac OS
+h3. On Mac OS
 
-bc. $ brew install libmemcached memcached
-$ pecl install memcached
+"Homebrew":http://brew.sh package manager and the "Homebrew-PHP repository":https://github.com/josegonzalez/homebrew-php are one of the easiest ways to manage PHP installations on Mac OS. After you have "tapped to the Homebrew-PHP repository":https://github.com/josegonzalez/homebrew-php#installation, you can simply install @php@ and @memcached@ with:
+
+bc. $ brew install php55 php55-memcached
+
+This will install PHP 5.5, Memcached extension and its dependencies.
 
 h2. Attributes
 
