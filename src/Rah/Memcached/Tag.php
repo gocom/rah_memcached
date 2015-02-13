@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with rah_flat. If not, see <http://www.gnu.org/licenses/>.
+ * along with rah_memcached. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
