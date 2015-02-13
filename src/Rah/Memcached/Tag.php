@@ -4,7 +4,7 @@
  * rah_memcached - Memcached templates for Textpattern CMS
  * https://github.com/gocom/rah_memcached
  *
- * Copyright (C) 2014 Jukka Svahn
+ * Copyright (C) 2015 Jukka Svahn
  *
  * This file is part of rah_memcached.
  *
