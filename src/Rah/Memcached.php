@@ -77,10 +77,15 @@ class Rah_Memcached
     }
 
     /**
-     * {@inheritdoc}
+     * Adds a Memcached server.
+     *
+     * @param  string $host   Server hostname
+     * @param  int    $port   Server port
+     * @param  int    $weight Server try-out order
+     * @return bool   FALSE on error
      */
 
-    public function addServer($host , $port, $weight = 0)
+    public function addServer($host, $port, $weight = 0)
     {
         $servers = $this->cache->getServerList();
 
@@ -92,20 +97,21 @@ class Rah_Memcached
             }
         }
 
-        return $this->cache->addServer($host , $port);
+        return (bool) $this->cache->addServer($host , $port);
     }
 
     /**
      * Sets a key.
      *
-     * @param string $key        The key
-     * @param mixed  $value      The value
-     * @param int    $expiration The expiration in seconds
+     * @param  string $key        The key
+     * @param  mixed  $value      The value
+     * @param  int    $expiration The expiration in seconds
+     * @return bool  FALSE on error
      */
 
     public function set($key, $value, $expiration = 0)
     {
-        return $this->cache->set($this->prefix . $key, $value, $expiration);
+        return (bool) $this->cache->set($this->prefix . $key, $value, $expiration);
     }
 
     /**
