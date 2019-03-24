@@ -21,5 +21,11 @@
         "ext-memcached": "*",
         "textpattern/lock": ">=4.6.0",
         "textpattern/installer": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "3.*"
+    },
+    "scripts": {
+        "cs": "./vendor/bin/phpcs"
     }
 }
