@@ -10,6 +10,7 @@
     "help": {"file" : ["./README.textile"]},
     "code": {"file" : [
         "./src/Rah/Memcached.php",
-        "./src/Rah/Memcached/Tag.php"
+        "./src/Functions.php",
+        "./src/Index.php"
     ]}
 }

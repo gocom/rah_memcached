@@ -4,7 +4,7 @@
  * rah_memcached - Memcached templates for Textpattern CMS
  * https://github.com/gocom/rah_memcached
  *
- * Copyright (C) 2015 Jukka Svahn
+ * Copyright (C) 2019 Jukka Svahn
  *
  * This file is part of rah_memcached.
  *
@@ -118,7 +118,7 @@ class Rah_Memcached
      * Gets a key.
      *
      * @param  string $key The key
-     * @return mixed  The value, or FALSE on error 
+     * @return mixed  The value, or FALSE on error
      */
 
     public function get($key)

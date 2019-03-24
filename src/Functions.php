@@ -4,7 +4,7 @@
  * rah_memcached - Memcached templates for Textpattern CMS
  * https://github.com/gocom/rah_memcached
  *
- * Copyright (C) 2015 Jukka Svahn
+ * Copyright (C) 2019 Jukka Svahn
  *
  * This file is part of rah_memcached.
  *
@@ -24,19 +24,19 @@
 /**
  * Stores template portions and variables in Memcached.
  *
- * <code>
+ * ```
  * <txp:rah_memcached name="site:section_nav">
  *  <txp:section_list>
  *      <txp:section />
  *  </txp:section_list>
  * </txp:rah_memcached>
- * </code>
+ * ```
  *
  * The tag can also be used to store variables in the memory,
  * skipping the variable execution and recreating the variables from
  * the state kept in memory.
  *
- * <code>
+ * ```
  * <txp:rah_memcached name="site:variables">
  *  <txp:variable name="variable1" value="value 1" />
  *  <txp:variable name="variable2" value="value 2" />
@@ -44,7 +44,7 @@
  *
  * Variable1: <txp:variable name="variable1" />
  * Variable2: <txp:variable name="variable2" />
- * </code>
+ * ```
  *
  * A variable's value is stored if its updated or created within the
  * rah_memcached statement, skipping the value assignment execution, but
@@ -56,17 +56,16 @@
  * @param  string $thing Contained statement
  * @return string User markup
  */
-
 function rah_memcached($atts, $thing = null)
 {
     global $variable;
     static $memcached = null;
 
-    extract(lAtts(array(
+    extract(lAtts([
         'expires' => 0,
         'lastmod' => 1,
         'name'    => null,
-    ), $atts));
+    ], $atts));
 
     if ($memcached === null) {
         $memcached = new Rah_Memcached();
@@ -77,7 +76,7 @@ function rah_memcached($atts, $thing = null)
     }
 
     if ($memcached->isValidKey($name) === false) {
-        trigger_error(gTxt('invalid_attribute_value', array('{name}' => 'name')));
+        trigger_error(gTxt('invalid_attribute_value', ['{name}' => 'name']));
         return '';
     }
 
@@ -107,11 +106,11 @@ function rah_memcached($atts, $thing = null)
         return '';
     }
 
-    $cache = array(
-        'variables' => array(),
-        'markup'    => '',
-        'lastmod'   => null,
-    );
+    $cache = [
+        'variables' => [],
+        'markup' => '',
+        'lastmod' => null,
+    ];
 
     if ($lastmod) {
         $cache['lastmod'] = get_pref('lastmod');
