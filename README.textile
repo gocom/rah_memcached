@@ -1,6 +1,6 @@
 h1. rah_memcached
 
-"Download":https://github.com/gocom/rah_memcached/releases | "Packagist":https://packagist.org/packages/rah/rah_memcached | "Twitter":http://twitter.com/gocom | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":http://rahforum.biz/donate/rah_memcached
+"Packagist":https://packagist.org/packages/rah/rah_memcached | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":http://rahforum.biz/donate/rah_memcached
 
 A plugin for "Textpattern CMS":http://www.textpattern.com that stores parts of your templates in "Memcached":http://memcached.org/, a distributed in-memory key-value caching system.
 
@@ -8,9 +8,7 @@ h2. Install
 
 Using "Composer":https://getcomposer.org:
 
-bc. $ composer require rah/rah_memcached:*
-
-Or "download":https://github.com/gocom/rah_memcached/releases a plugin package.
+bc. $ composer require rah/rah_memcached
 
 h2. Basics
 
@@ -27,8 +25,8 @@ On subsequent calls the resulting output markup and variables will be loaded fro
 
 h2. Requirements
 
-* Textpattern 4.4.1 or newer.
-* PHP 5.2.0 or newer.
+* Textpattern 4.6.0 or newer.
+* PHP 5.6.0 or newer.
 * "Memcached":http://www.php.net/manual/en/book.memcached.php PHP extension.
 * "libmemcached":http://libmemcached.org/ client library.
 * "Memcached":http://memcached.org/ server.
