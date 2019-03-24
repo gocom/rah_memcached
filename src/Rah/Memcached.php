@@ -31,16 +31,14 @@
  * define('RAH_MEMCACHED_PORT', 11211);
  * </code>
  */
-
-class Rah_Memcached
+final class Rah_Memcached
 {
     /**
      * Stores a Memcached instance.
      *
      * @var Memcached
      */
-
-    protected $cache;
+    private $cache;
 
     /**
      * A prefix used to seperate Textpattern installation keys from one another.
@@ -50,13 +48,11 @@ class Rah_Memcached
      *
      * @var string
      */
-
     protected $prefix;
 
     /**
      * Constructor.
      */
-
     public function __construct()
     {
         $this->prefix = 'Rah:'.get_pref('siteurl').':';
@@ -84,7 +80,6 @@ class Rah_Memcached
      * @param  int    $weight Server try-out order
      * @return bool   FALSE on error
      */
-
     public function addServer($host, $port, $weight = 0)
     {
         $servers = $this->cache->getServerList();
@@ -97,7 +92,7 @@ class Rah_Memcached
             }
         }
 
-        return (bool) $this->cache->addServer($host , $port);
+        return (bool) $this->cache->addServer($host, $port);
     }
 
     /**
@@ -108,7 +103,6 @@ class Rah_Memcached
      * @param  int    $expiration The expiration in seconds
      * @return bool  FALSE on error
      */
-
     public function set($key, $value, $expiration = 0)
     {
         return (bool) $this->cache->set($this->prefix . $key, $value, $expiration);
@@ -120,7 +114,6 @@ class Rah_Memcached
      * @param  string $key The key
      * @return mixed  The value, or FALSE on error
      */
-
     public function get($key)
     {
         $cache = $this->cache->get($this->prefix . $key);
@@ -137,7 +130,6 @@ class Rah_Memcached
      *
      * @return bool
      */
-
     public function flush()
     {
         $keys = $this->cache->getAllKeys();
@@ -162,7 +154,6 @@ class Rah_Memcached
      * @param  string $key The key to validate
      * @return bool   FALSE if invalid
      */
-
     public function isValidKey($key)
     {
         if (is_string($key) && strpos($key, ':')) {
@@ -177,7 +168,6 @@ class Rah_Memcached
      *
      * @return string
      */
-
     public function getResultMessage()
     {
         return $this->cache->getResultMessage();

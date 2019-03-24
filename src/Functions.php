@@ -81,11 +81,9 @@ function rah_memcached($atts, $thing = null)
     }
 
     if (($cache = $memcached->get($name)) !== false) {
-
         trace_add("[rah_memcached: '$name' found in cache]");
 
         if (is_array($cache)) {
-
             if (!empty($cache['variables'])) {
                 $variable = array_merge((array) $variable, $cache['variables']);
             }
@@ -99,7 +97,10 @@ function rah_memcached($atts, $thing = null)
 
         return (string) $cache;
     } else {
-        trace_add("[rah_memcached: '$name' not found or expired. Memcached said: '".$memcached->getResultMessage()."']");
+        trace_add(
+            "[rah_memcached: '$name' not found or expired. Memcached said: '".
+            $memcached->getResultMessage()."']"
+        );
     }
 
     if ($thing === null) {
