@@ -89,6 +89,10 @@ Size: <txp:variable name="size" />
 
 h2. Changelog
 
+h3. Version 0.2.0 - upcoming
+
+* Register the tag.
+
 h3. Version 0.1.0 - 2014/03/19
 
 * Initial release.
