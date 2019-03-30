@@ -48,9 +48,20 @@ Using "Homebrew":https://brew.sh and "pecl":https://pecl.php.net/package/memcach
 bc. $ brew install pkg-config php libmemcached memcached
 $ pecl install memcached
 
+h2. Configuration
+
+Connected server can be configured through Memcached configuration, or by setting them in Textpattern's @config.php@:
+
+bc. define('\RAH_MEMCACHED_HOST', 'localhost');
+define('\RAH_MEMCACHED_PORT', 11211);
+
 h2. Attributes
 
-The tag is a container, @<txp:rah_memcached> ...contained statement... </txp:rah_memcached>@, and attributes for it follow.
+bc. <txp:rah_memcached>
+    ...contained statement...
+</txp:rah_memcached>
+
+The tag is a container and attributes for it follow.
 
 *expires*
 Time in seconds it takes to the stored item to expire and be refreshed. If zero (@0@), the cache is kept in memory until the cache is flushed or Memcached is restarted.
@@ -64,16 +75,9 @@ Default: @1@ Example: @lastmod="1"@
 Sets a name, key, for the cached item. The name must consist of a namespace and a local name, separated by colon. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoids any potential collisions. Namespace is mandatory to make sure you use prefixes that prevent collisions and spoofing attacks when you use user-defined HTTP request data to construct page specific cached markup blocks.
 Default: _undefined_ Example: @name="namespace:key"@
 
-h2. Configuration
-
-Connected server can be configured through Memcached configuration, or by setting them in Textpattern's @config.php@:
-
-bc. define('\RAH_MEMCACHED_HOST', 'localhost');
-define('\RAH_MEMCACHED_PORT', 11211);
-
 h2. Examples
 
-h3. Basic usage: store navigation in memory
+h3. Store section navigation in memory
 
 bc. <txp:rah_memcached name="site:section_nav">
     <txp:section_list wraptag="ul" break="li">
