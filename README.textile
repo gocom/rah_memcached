@@ -66,7 +66,7 @@ Default: _undefined_ Example: @name="namespace:key"@
 
 h2. Configuration
 
-Connected server can be configured through Memcached configuration, or by setting them in Textpattern's `config.php`:
+Connected server can be configured through Memcached configuration, or by setting them in Textpattern's @config.php@:
 
 bc. define('\RAH_MEMCACHED_HOST', 'localhost');
 define('\RAH_MEMCACHED_PORT', 11211);
