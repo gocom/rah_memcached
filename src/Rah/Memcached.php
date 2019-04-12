@@ -48,51 +48,60 @@ final class Rah_Memcached
      *
      * @var string
      */
-    protected $prefix;
+    private $prefix;
+
+    /**
+     * Stores config.
+     *
+     * @var Rah_Memcached_Config
+     */
+    private $config;
 
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct(Memcached $memcached, Rah_Memcached_Config $config)
     {
-        $this->prefix = 'Rah:'.get_pref('siteurl').':';
+        $this->config = $config;
+        $this->cache = $memcached;
+        $this->cache->addServer($config);
+    }
 
-        $host = 'localhost';
-        $port = 11211;
-
-        if (defined('RAH_MEMCACHED_HOST')) {
-            $host = (string) RAH_MEMCACHED_HOST;
-        }
-
-        if (defined('RAH_MEMCACHED_PORT')) {
-            $port = (int) RAH_MEMCACHED_PORT;
-        }
-
-        $this->cache = new Memcached();
-        $this->cache->addServer($host, $port);
+    /**
+     * Sets prefix.
+     *
+     * @return $this
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+        return $this;
     }
 
     /**
      * Adds a Memcached server.
      *
-     * @param  string $host   Server hostname
-     * @param  int    $port   Server port
-     * @param  int    $weight Server try-out order
-     * @return bool   FALSE on error
+     * @param  Rah_Memcached_Config $config
+     * @return $this
+     * @throws Exception
      */
-    public function addServer($host, $port, $weight = 0)
+    public function addServer(Rah_Memcached_Config $config)
     {
         $servers = $this->cache->getServerList();
 
         if (is_array($servers)) {
             foreach ($servers as $server) {
-                if ((string) $server['host'] === (string) $host && (int) $server['port'] === (int) $port) {
-                    return true;
+                if ($server['host'] === $config->getHost() && (int) $server['port'] === $config->getPort()) {
+                    return $this;
                 }
             }
         }
 
-        return (bool) $this->cache->addServer($host, $port);
+        if ($this->cache->addServer($config->getHost(), $config->getPort()) === false) {
+            throw new \Exception('Unable to connect to the server');
+        }
+
+        return $this;
     }
 
     /**

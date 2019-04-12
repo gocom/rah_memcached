@@ -68,7 +68,7 @@ function rah_memcached($atts, $thing = null)
     ], $atts));
 
     if ($memcached === null) {
-        $memcached = new Rah_Memcached();
+        $memcached = new Rah_Memcached(new Memcached(), New Rah_Memcached_Config());
     }
 
     if ($name === null && $thing !== null) {

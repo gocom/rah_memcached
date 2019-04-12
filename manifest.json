@@ -4,11 +4,12 @@
     "version": "0.1.0",
     "type": 1,
     "author": "Jukka Svahn",
-    "author_uri": "http://rahforum.biz",
+    "author_uri": "https://github.com/gocom/rah_memcached",
     "order": 5,
     "flags": 0,
     "help": {"file" : ["./README.textile"]},
     "code": {"file" : [
+        "./src/Rah/Memcached/Config.php",
         "./src/Rah/Memcached.php",
         "./src/Functions.php",
         "./src/Index.php"
