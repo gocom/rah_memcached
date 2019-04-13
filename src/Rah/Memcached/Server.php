@@ -69,10 +69,10 @@ class Rah_Memcached_Server
     /**
      * Sets port.
      *
-     * @param  string $port The port
+     * @param  int $port The port
      * @return $this
      */
-    public function setPort(string $port)
+    public function setPort(int $port)
     {
         $this->port = $port;
         return $this;
