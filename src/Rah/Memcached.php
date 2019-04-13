@@ -26,10 +26,10 @@
  *
  * Configuration happens by defining few constants in config.php:
  *
- * <code>
- * define('RAH_MEMCACHED_HOST', 'localhost');
- * define('RAH_MEMCACHED_PORT', 11211);
- * </code>
+ * ```
+ * define('\RAH_MEMCACHED_HOST', 'localhost');
+ * define('\RAH_MEMCACHED_PORT', 11211);
+ * ```
  */
 final class Rah_Memcached
 {
@@ -53,14 +53,14 @@ final class Rah_Memcached
     /**
      * Stores config.
      *
-     * @var Rah_Memcached_Config
+     * @var Rah_Memcached_Server
      */
     private $config;
 
     /**
      * Constructor.
      */
-    public function __construct(Memcached $memcached, Rah_Memcached_Config $config)
+    public function __construct(Memcached $memcached, Rah_Memcached_Server $config)
     {
         $this->config = $config;
         $this->cache = $memcached;
@@ -68,11 +68,22 @@ final class Rah_Memcached
     }
 
     /**
+     * Gets prefix.
+     *
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
+    /**
      * Sets prefix.
      *
+     * @param  string $prefix The prefix
      * @return $this
      */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix)
     {
         $this->prefix = $prefix;
         return $this;
@@ -81,11 +92,11 @@ final class Rah_Memcached
     /**
      * Adds a Memcached server.
      *
-     * @param  Rah_Memcached_Config $config
+     * @param  Rah_Memcached_Server $config
      * @return $this
      * @throws Exception
      */
-    public function addServer(Rah_Memcached_Config $config)
+    public function addServer(Rah_Memcached_Server $config)
     {
         $servers = $this->cache->getServerList();
 
@@ -105,33 +116,36 @@ final class Rah_Memcached
     }
 
     /**
-     * Sets a key.
+     * Adds an item to the cache.
      *
-     * @param  string $key        The key
-     * @param  mixed  $value      The value
-     * @param  int    $expiration The expiration in seconds
-     * @return bool  FALSE on error
+     * @param  Rah_Memcached_Item $item
+     * @return $this
+     * @throws Exception
      */
-    public function set($key, $value, $expiration = 0)
+    public function set(Rah_Memcached_Item $item)
     {
-        return (bool) $this->cache->set($this->prefix . $key, $value, $expiration);
+        if ($this->cache->set($this->getPrefix() . $item->getName(), $item->getData(), $item->getExpires())) {
+            return $this;
+        }
+
+        throw new \Exception('Unable to set');
     }
 
     /**
      * Gets a key.
      *
      * @param  string $key The key
-     * @return mixed  The value, or FALSE on error
+     * @return mixed  Rah_Memcached_Item
      */
-    public function get($key)
+    public function get(string $key)
     {
-        $cache = $this->cache->get($this->prefix . $key);
+        $data = $this->cache->get($this->prefix . $key);
 
-        if (is_array($cache) && isset($cache['lastmod']) && $cache['lastmod'] !== get_pref('lastmod')) {
-            return false;
+        if (!is_array($data)) {
+            throw new \Exception('Unable to get');
         }
 
-        return $cache;
+        return new Rah_Memcached_Item($data);
     }
 
     /**

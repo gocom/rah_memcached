@@ -9,7 +9,8 @@
     "flags": 0,
     "help": {"file" : ["./README.textile"]},
     "code": {"file" : [
-        "./src/Rah/Memcached/Config.php",
+        "./src/Rah/Memcached/Item.php",
+        "./src/Rah/Memcached/Server.php",
         "./src/Rah/Memcached.php",
         "./src/Functions.php",
         "./src/Index.php"

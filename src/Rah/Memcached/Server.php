@@ -22,9 +22,9 @@
  */
 
 /**
- * Configuration.
+ * Server configuration.
  */
-class Rah_Memcached_Config
+class Rah_Memcached_Server
 {
     /**
      * Stores hostname.

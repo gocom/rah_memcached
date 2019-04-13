@@ -26,7 +26,7 @@ On subsequent calls the resulting output markup and variables will be loaded fro
 h2. Requirements
 
 * Textpattern 4.7.0 or newer.
-* PHP 5.6.0 or newer.
+* PHP 7.1.0 or newer.
 * "Memcached":https://secure.php.net/manual/en/book.memcached.php PHP extension.
 * "libmemcached":https://libmemcached.org/ client library.
 * "Memcached":https://memcached.org/ server.
@@ -67,9 +67,9 @@ The tag is a container and attributes for it follow.
 Time in seconds it takes to the stored item to expire and be refreshed. If zero (@0@), the cache is kept in memory until the cache is flushed or Memcached is restarted.
 Default: @0@ Example: @expires="3600"@
 
-*lastmod*
-If enabled, the item is refreshed on content updates.
-Default: _enabled_ Example: @lastmod@
+*persist*
+If enabled, ignores content updates as set by site's @lastmod@ timestamp.
+Default: _disabled_ Example: @persist@
 
 *name*
 Sets a name, key, for the cached item. The name must consist of a namespace and a local name, separated by colon. This name is then used identify the item and fetch it from the storage. If a _name_ is not defined, its automatically created by hashing the given contained markup. Giving a name is more efficient and avoids any potential collisions. Namespace is mandatory to make sure you use prefixes that prevent collisions and spoofing attacks when you use user-defined HTTP request data to construct page specific cached markup blocks.
@@ -100,6 +100,7 @@ h2. Changelog
 h3. Version 0.2.0 - upcoming
 
 * Register the tag.
+* Replaced @lastmod@ attribute with @persist@.
 * Now requires Textpattern 4.7.0 or newer.
 
 h3. Version 0.1.0 - 2014/03/19

@@ -25,11 +25,11 @@
  * Stores template portions and variables in Memcached.
  *
  * ```
- * <txp:rah_memcached name="site:section_nav">
+ * <rah::memcached name="site:section_nav">
  *  <txp:section_list>
  *      <txp:section />
  *  </txp:section_list>
- * </txp:rah_memcached>
+ * </rah::memcached>
  * ```
  *
  * The tag can also be used to store variables in the memory,
@@ -37,10 +37,10 @@
  * the state kept in memory.
  *
  * ```
- * <txp:rah_memcached name="site:variables">
+ * <rah::memcached name="site:variables">
  *  <txp:variable name="variable1" value="value 1" />
  *  <txp:variable name="variable2" value="value 2" />
- * </txp:rah_memcached>
+ * </rah::memcached>
  *
  * Variable1: <txp:variable name="variable1" />
  * Variable2: <txp:variable name="variable2" />
@@ -63,8 +63,8 @@ function rah_memcached($atts, $thing = null)
 
     extract(lAtts([
         'expires' => 0,
-        'lastmod' => 1,
-        'name'    => null,
+        'persist' => 0,
+        'name' => null,
     ], $atts));
 
     if ($memcached === null) {
@@ -80,60 +80,60 @@ function rah_memcached($atts, $thing = null)
         return '';
     }
 
-    if (($cache = $memcached->get($name)) !== false) {
+    $lastmod = (int) get_pref('lastmod');
+
+    try {
+        $cache = $memcached->get($name);
+
+        if ($cache->getLastmod() && $cache->getLastmod() < $lastmod) {
+            throw new \Exception('Expired');
+        }
+
         trace_add("[rah_memcached: '$name' found in cache]");
 
-        if (is_array($cache)) {
-            if (!empty($cache['variables'])) {
-                $variable = array_merge((array) $variable, $cache['variables']);
-            }
-
-            if (isset($cache['markup'])) {
-                return $cache['markup'];
-            }
-
-            return '';
+        if (($stored = $cache->getVariables())) {
+            $variable = array_merge((array) $variable, $stored);
         }
 
-        return (string) $cache;
-    } else {
-        trace_add(
-            "[rah_memcached: '$name' not found or expired. Memcached said: '".
-            $memcached->getResultMessage()."']"
-        );
+        return $this->getMarkup();
+    } catch (\Exception $e) {
+        trace_add('[rah_memcached: ' . $e->getMessage() . ']');
     }
 
-    if ($thing === null) {
-        return '';
+    $existing = $variable;
+    $parsed = parse($thing);
+
+    $item = new Rah_Memcached_Item();
+    $item
+        ->setName($name)
+        ->setExpires((int) $expires)
+        ->setMarkup($parsed);
+
+    if (!$persist) {
+        $item->setLastmod($lastmod);
     }
-
-    $cache = [
-        'variables' => [],
-        'markup' => '',
-        'lastmod' => null,
-    ];
-
-    if ($lastmod) {
-        $cache['lastmod'] = get_pref('lastmod');
-    }
-
-    $existingVariables = $variable;
-    $cache['markup'] = (string) parse($thing);
 
     if ($variable) {
-        foreach ($variable as $varName => $varValue) {
-            if (!isset($existingVariables[$varName]) || (string) $existingVariables[$varName] !== (string) $varValue) {
-                $cache['variables'][(string) $varName] = (string) $varValue;
-                trace_add("[rah_memcached: picked up variable '$varName' for storage]");
+        $storage = [];
+
+        foreach ($variable as $var => $value) {
+            if (!isset($existing[$var]) || $existing[$var] !== $value) {
+                $storage[$var] = $value;
+                trace_add("[rah_memcached: picked up variable '$var' for storage]");
             }
+        }
+
+        if ($storage) {
+            $item->setVariables($storage);
         }
     }
 
-    if ($memcached->set($name, $cache, (int) $expires) !== false) {
+    try {
+        $memcached->set($item);
         trace_add("[rah_memcached: stored item '$name']");
-    } else {
-        trace_add("[rah_memcached: failed to store '$name'. Memcached said: '".$memcached->getResultMessage()."']");
+    } catch (Exception $e) {
+        trace_add("[rah_memcached: {$e->getMessage()}]");
     }
 
-    return $cache['markup'];
+    return $parsed;
 }
