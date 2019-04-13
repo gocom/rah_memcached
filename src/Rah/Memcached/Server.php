@@ -57,9 +57,10 @@ class Rah_Memcached_Server
     /**
      * Sets hostname.
      *
+     * @param  string $host The hostname
      * @return $this
      */
-    public function setHost($host)
+    public function setHost(string $host)
     {
         $this->host = $host;
         return $this;
@@ -68,9 +69,10 @@ class Rah_Memcached_Server
     /**
      * Sets port.
      *
+     * @param  string $port The port
      * @return $this
      */
-    public function setPort($port)
+    public function setPort(string $port)
     {
         $this->port = $port;
         return $this;
