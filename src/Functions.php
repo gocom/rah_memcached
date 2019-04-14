@@ -68,16 +68,11 @@ function rah_memcached($atts, $thing = null)
     ], $atts));
 
     if ($memcached === null) {
-        $memcached = new Rah_Memcached(new Memcached(), new Rah_Memcached_DefaultServer());
+        $memcached = new Rah_Memcached(new Memcached(), new Rah_Memcached_Server());
     }
 
-    if ($name === null && $thing !== null) {
-        $name = 'rah_memcached_hash:'.md5($thing);
-    }
-
-    if ($memcached->isValidKey($name) === false) {
-        trigger_error(gTxt('invalid_attribute_value', ['{name}' => 'name']));
-        return '';
+    if ($name === null) {
+        $name = (new Rah_Memcached_Item())->setMarkup((string)$thing)->getName();
     }
 
     $lastmod = (int) get_pref('lastmod');
@@ -131,7 +126,7 @@ function rah_memcached($atts, $thing = null)
     try {
         $memcached->set($item);
         trace_add("[rah_memcached: stored item '$name']");
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         trace_add("[rah_memcached: {$e->getMessage()}]");
     }
 

@@ -23,107 +23,29 @@
 
 /**
  * Server configuration.
+ *
+ * ```
+ * $server = new Rah_Memcached_Server();
+ * $server->setHost('hostname.tld')->setPort(1234);
+ * ```
  */
-class Rah_Memcached_Server
+final class Rah_Memcached_Server extends Rah_Memcached_AbstractServer
 {
     /**
-     * Stores hostname.
-     *
-     * @var string
-     */
-    private $host = 'localhost';
-
-    /**
-     * Stores port.
-     *
-     * @var int
-     */
-    private $port = 11211;
-
-    /**
-     * Stores weight.
-     *
-     * @var int
-     */
-    private $weight = 0;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->configure();
-    }
-
-    /**
-     * Configure.
+     * {@inheritdoc}
      */
     protected function configure(): void
     {
-    }
+        if (defined('\RAH_MEMCACHED_HOST')) {
+            $this->setHost(\RAH_MEMCACHED_HOST);
+        }
 
-    /**
-     * Sets hostname.
-     *
-     * @param  string $host The hostname
-     * @return $this
-     */
-    public function setHost(string $host)
-    {
-        $this->host = $host;
-        return $this;
-    }
+        if (defined('\RAH_MEMCACHED_PORT')) {
+            $this->setPort(\RAH_MEMCACHED_PORT);
+        }
 
-    /**
-     * Sets port.
-     *
-     * @param  int $port The port
-     * @return $this
-     */
-    public function setPort(int $port)
-    {
-        $this->port = $port;
-        return $this;
-    }
-
-    /**
-     * Sets weight.
-     *
-     * @return $this
-     */
-    public function setWeight(int $weight)
-    {
-        $this->weight = $weight;
-        return $this;
-    }
-
-    /**
-     * Gets hostname.
-     *
-     * @return string
-     */
-    public function getHost(): string
-    {
-        return $this->host;
-    }
-
-    /**
-     * Gets port.
-     *
-     * @return int
-     */
-    public function getPort(): int
-    {
-        return $this->port;
-    }
-
-    /**
-     * Gets weight.
-     *
-     * @return int
-     */
-    public function getWeight(): int
-    {
-        return $this->weight;
+        $this
+            ->setPrefix('rah:' . get_pref('siteurl'))
+            ->setLastmod(get_pref('lastmod'));
     }
 }

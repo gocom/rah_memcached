@@ -41,52 +41,20 @@ final class Rah_Memcached
     private $cache;
 
     /**
-     * A prefix used to seperate Textpattern installation keys from one another.
-     *
-     * This prefix allows sharing same Memcached server between multiple
-     * Textpattern sites.
-     *
-     * @var string
-     */
-    private $prefix;
-
-    /**
      * Stores config.
      *
-     * @var Rah_Memcached_Server
+     * @var Rah_Memcached_AbstractServer
      */
     private $config;
 
     /**
      * Constructor.
      */
-    public function __construct(Memcached $memcached, Rah_Memcached_Server $config)
+    public function __construct(Memcached $memcached, Rah_Memcached_AbstractServer $config)
     {
         $this->config = $config;
         $this->cache = $memcached;
         $this->cache->addServer($config);
-    }
-
-    /**
-     * Gets prefix.
-     *
-     * @return string
-     */
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * Sets prefix.
-     *
-     * @param  string $prefix The prefix
-     * @return $this
-     */
-    public function setPrefix(string $prefix)
-    {
-        $this->prefix = $prefix;
-        return $this;
     }
 
     /**
@@ -163,11 +131,13 @@ final class Rah_Memcached
      *
      * @param  Rah_Memcached_Item $item
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function set(Rah_Memcached_Item $item)
     {
-        if ($this->cache->set($this->getPrefix() . $item->getName(), $item->getData(), $item->getExpires())) {
+        $item->setKey($this->config->getPrefix() . $this->getName());
+
+        if ($this->cache->set($item->getKey(), $item->getData(), $item->getExpires())) {
             return $this;
         }
 
@@ -178,11 +148,12 @@ final class Rah_Memcached
      * Gets a key.
      *
      * @param  string $key The key
-     * @return mixed  Rah_Memcached_Item
+     * @return Rah_Memcached_Item
+     * @throws \Exception
      */
     public function get(string $key)
     {
-        $data = $this->cache->get($this->prefix . $key);
+        $data = $this->cache->get($this->config->getPrefix() . $key);
 
         if (!is_array($data)) {
             throw new \Exception('Unable to get');
@@ -194,39 +165,43 @@ final class Rah_Memcached
     /**
      * Flushes cache.
      *
-     * @return bool
+     * @return $this
      */
     public function flush()
     {
-        $keys = $this->cache->getAllKeys();
-
-        if (is_array($keys)) {
-            foreach ($keys as $key) {
-                if (strpos($key, $this->prefix) === 0) {
-                    $this->cache->delete($key, $delay);
-                }
-            }
+        foreach ($this->getAllKeys() as $key) {
+            $this->cache->delete($key);
         }
 
-        return true;
+        return $this;
     }
 
     /**
-     * Whether the key is valid.
+     * Gets all keys.
      *
-     * A key must consist of namespace separated by a colon,
-     * and have between 3 and 64 characters.
-     *
-     * @param  string $key The key to validate
-     * @return bool   FALSE if invalid
+     * @return string[]
      */
-    public function isValidKey($key)
+    public function getAllKeys(): array
     {
-        if (is_string($key) && strpos($key, ':')) {
-            return ($length = strlen($key)) && $length >= 3 && $length <= 64;
+        $keys = $this->cache->getAllKeys();
+
+        if (!is_array($keys)) {
+            return [];
         }
 
-        return false;
+        return array_filter($keys, function ($key) {
+            return strpos($key, $this->config->getPrefix()) === 0;
+        });
+    }
+
+    /**
+     * Gets collection.
+     *
+     * @return Rah_Memcached_ItemIterator
+     */
+    protected function getCollection()
+    {
+        return new Rah_Memcached_ItemIterator($this);
     }
 
     /**
@@ -234,7 +209,7 @@ final class Rah_Memcached
      *
      * @return string
      */
-    public function getResultMessage()
+    public function getResultMessage(): string
     {
         return $this->cache->getResultMessage();
     }

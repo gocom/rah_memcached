@@ -146,7 +146,11 @@ final class Rah_Memcached_Item
      */
     public function getName(): string
     {
-        return $this->getData('name');
+        if (($name = $this->getData('name')) !== null) {
+            return $name;
+        }
+
+        return md5($this->getData('markup'));
     }
 
     /**
@@ -179,5 +183,24 @@ final class Rah_Memcached_Item
     public function setMarkup(string $markup)
     {
         return $this->setData('markup', $markup);
+    }
+
+    /**
+     * Gets a key.
+     */
+    public function getKey(): string
+    {
+        return (string) $this->getData('key');
+    }
+
+    /**
+     * Sets a key.
+     *
+     * @param  string $key The key
+     * @return $this
+     */
+    public function setKey(string $key)
+    {
+        return $this->setData('key', $key);
     }
 }
