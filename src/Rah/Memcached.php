@@ -195,11 +195,11 @@ final class Rah_Memcached
     }
 
     /**
-     * Gets collection.
+     * Gets collection of items.
      *
      * @return Rah_Memcached_ItemIterator
      */
-    protected function getCollection()
+    public function getItems()
     {
         return new Rah_Memcached_ItemIterator($this);
     }
