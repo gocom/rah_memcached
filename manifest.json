@@ -11,6 +11,7 @@
     "code": {"file" : [
         "./src/Rah/Memcached/Item.php",
         "./src/Rah/Memcached/Server.php",
+        "./src/Rah/Memcached/DefaultServer.php",
         "./src/Rah/Memcached.php",
         "./src/Functions.php",
         "./src/Index.php"

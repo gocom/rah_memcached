@@ -31,27 +31,35 @@ class Rah_Memcached_Server
      *
      * @var string
      */
-    private $host;
+    private $host = 'localhost';
 
     /**
      * Stores port.
      *
      * @var int
      */
-    private $port;
+    private $port = 11211;
+
+    /**
+     * Stores weight.
+     *
+     * @var int
+     */
+    private $weight = 0;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        if (defined('\RAH_MEMCACHED_HOST')) {
-            $this->setHost(\RAH_MEMCACHED_HOST);
-        }
+        $this->configure();
+    }
 
-        if (defined('\RAH_MEMCACHED_PORT')) {
-            $this->setPort(\RAH_MEMCACHED_PORT);
-        }
+    /**
+     * Configure.
+     */
+    protected function configure(): void
+    {
     }
 
     /**
@@ -79,6 +87,17 @@ class Rah_Memcached_Server
     }
 
     /**
+     * Sets weight.
+     *
+     * @return $this
+     */
+    public function setWeight(int $weight)
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    /**
      * Gets hostname.
      *
      * @return string
@@ -96,5 +115,15 @@ class Rah_Memcached_Server
     public function getPort(): int
     {
         return $this->port;
+    }
+
+    /**
+     * Gets weight.
+     *
+     * @return int
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
     }
 }

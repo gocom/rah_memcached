@@ -92,24 +92,67 @@ final class Rah_Memcached
     /**
      * Adds a Memcached server.
      *
-     * @param  Rah_Memcached_Server $config
+     * @param  Rah_Memcached_Server $server
      * @return $this
      * @throws Exception
      */
-    public function addServer(Rah_Memcached_Server $config)
+    public function addServer(Rah_Memcached_Server $server)
+    {
+        return $this->addServers([$server]);
+    }
+
+    /**
+     * Gets an array of servers in the pool.
+     *
+     * @return Rah_Memcached_Server[]
+     */
+    public function getServers(): array
     {
         $servers = $this->cache->getServerList();
 
-        if (is_array($servers)) {
-            foreach ($servers as $server) {
-                if ($server['host'] === $config->getHost() && (int) $server['port'] === $config->getPort()) {
-                    return $this;
-                }
-            }
+        if (!is_array($servers)) {
+            return [];
         }
 
-        if ($this->cache->addServer($config->getHost(), $config->getPort()) === false) {
-            throw new \Exception('Unable to connect to the server');
+        return array_map(function ($server) {
+            return (new Rah_Memcached_Server())
+                ->setHost($server['host'])
+                ->setPort($server['port'])
+                ->setWeight($server['weight']);
+        }, $servers);
+    }
+
+    /**
+     * Adds multiple servers to the pool.
+     *
+     * @param  Rah_Memcached_Server[] $servers
+     * @return $this
+     * @throws \Exception
+     */
+    public function addServers(array $servers)
+    {
+        $pool = $this->getServers();
+
+        $servers = array_filter($servers, function ($server) use ($pool) {
+            foreach ($pool as $current) {
+                if ($current->getHost() === $server->getHost() && $current->getPort() === $server->getPort()) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        $status = $this->cache->addServers(array_map(function ($server) {
+            return [
+                $server->getHost(),
+                $server->getPort(),
+                $server->getWeight(),
+            ];
+        }, $servers));
+
+        if ($status === false) {
+            throw new \Exception('Unable to add given servers to the pool.');
         }
 
         return $this;
