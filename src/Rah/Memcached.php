@@ -54,7 +54,33 @@ final class Rah_Memcached
     {
         $this->config = $config;
         $this->cache = $memcached;
-        $this->cache->addServer($config);
+
+        $this->setOptions($this->config->getOptions());
+
+        if ($this->config->getUser()) {
+            $this->cache->setOption(Memcached::OPT_BINARY_PROTOCOL, true);
+
+            $this->cache->setSaslAuthData(
+                $this->config->getUsername(),
+                $this->config->getPassword()
+            );
+        }
+
+        $this->addServer($this->config);
+    }
+
+    /**
+     * Sets options.
+     *
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        if ($options) {
+            $this->cache->setOptions($options);
+        }
+
+        return $this;
     }
 
     /**

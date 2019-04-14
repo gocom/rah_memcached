@@ -62,6 +62,27 @@ abstract class Rah_Memcached_AbstractServer
     private $lastmod = 0;
 
     /**
+     * Stores username.
+     *
+     * @var string
+     */
+    private $username = '';
+
+    /**
+     * Stores password.
+     *
+     * @var string
+     */
+    private $password = '';
+
+    /**
+     * Stores options.
+     *
+     * @var array
+     */
+    private $options = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -164,7 +185,7 @@ abstract class Rah_Memcached_AbstractServer
     }
 
     /**
-     * Sets last modofication timestamp.
+     * Sets last modification timestamp.
      *
      * @param int $timestamp Lastmod timestamp
      * @return $this
@@ -176,10 +197,78 @@ abstract class Rah_Memcached_AbstractServer
     }
 
     /**
-     * Gets last modofication timestamp.
+     * Gets last modification timestamp.
+     *
+     * @return int
      */
     public function getLastmod(): int
     {
         return $this->lastmod;
+    }
+
+    /**
+     * Sets the username.
+     *
+     * @param  string $username Username
+     * @return $this
+     */
+    public function setUsername(string $username)
+    {
+        $this->username = $username;
+        return $this;
+    }
+
+    /**
+     * Gets the username.
+     *
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * Sets the password.
+     *
+     * @param  string $password Password
+     * @return $this
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * Gets the password.
+     *
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * Sets options.
+     *
+     * @param  array $options Options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+        return $this;
+    }
+
+    /**
+     * Gets options.
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }
