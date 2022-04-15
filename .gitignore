@@ -1,5 +1,7 @@
 .*
-!.gitignore
 !.editorconfig
+!.github
+!.gitignore
+/dist/
+/vendor/
 composer.lock
-/vendor
