@@ -1,6 +1,6 @@
 h1. rah_memcached
 
-"Packagist":https://packagist.org/packages/rah/rah_memcached | "Issues":https://github.com/gocom/rah_memcached/issues | "Donate":https://rahforum.biz/donate/rah_memcached
+"Download":https://github.com/gocom/rah_memcached/releases | "Packagist":https://packagist.org/packages/rah/rah_memcached | "Issues":https://github.com/gocom/rah_memcached/issues
 
 A plugin for "Textpattern CMS":https://textpattern.com that stores parts of your templates in "Memcached":https://memcached.org/, a distributed in-memory key-value caching system.
 

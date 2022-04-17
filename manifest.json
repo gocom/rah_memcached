@@ -1,7 +1,7 @@
 {
     "name": "rah_memcached",
     "description": "Store template parts in Memcached",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "type": 1,
     "author": "Jukka Svahn",
     "author_uri": "https://github.com/gocom/rah_memcached",
