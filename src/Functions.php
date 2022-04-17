@@ -58,7 +58,8 @@
  */
 function rah_memcached($atts, $thing = null)
 {
-    global $variable;
+    global $variable, $trace;
+
     static $memcached = null;
 
     extract(lAtts([
@@ -68,14 +69,19 @@ function rah_memcached($atts, $thing = null)
     ], $atts));
 
     if ($memcached === null) {
-        $memcached = new Rah_Memcached(new Memcached(), new Rah_Memcached_Server());
+        $memcached = new Rah_Memcached(
+            new Memcached(),
+            new Rah_Memcached_Server()
+        );
     }
 
     if ($name === null) {
-        $name = (new Rah_Memcached_Item())->setMarkup((string)$thing)->getName();
+        $name = (new Rah_Memcached_Item())
+            ->setMarkup((string)$thing)
+            ->getName();
     }
 
-    $lastmod = (int) get_pref('lastmod');
+    $lastmod = (int) get_lastmod();
 
     try {
         $cache = $memcached->get($name);
@@ -84,15 +90,16 @@ function rah_memcached($atts, $thing = null)
             throw new \Exception('Expired');
         }
 
-        trace_add("[rah_memcached: '$name' found in cache]");
+        $trace->log("[rah_memcached: '$name' found in cache]");
 
         if (($stored = $cache->getVariables())) {
             $variable = array_merge((array) $variable, $stored);
+            $trace->log("[rah_memcached: Exported cached variables]");
         }
 
-        return $this->getMarkup();
+        return $cache->getMarkup();
     } catch (\Exception $e) {
-        trace_add('[rah_memcached: ' . $e->getMessage() . ']');
+        $trace->log("[rah_memcached: useable record for '$name' not found in cache. Reason: {$e->getMessage()}]");
     }
 
     $existing = $variable;
@@ -114,7 +121,7 @@ function rah_memcached($atts, $thing = null)
         foreach ($variable as $var => $value) {
             if (!isset($existing[$var]) || $existing[$var] !== $value) {
                 $storage[$var] = $value;
-                trace_add("[rah_memcached: picked up variable '$var' for storage]");
+                $trace->log("[rah_memcached: picked up variable '$var' for storage]");
             }
         }
 
@@ -125,9 +132,9 @@ function rah_memcached($atts, $thing = null)
 
     try {
         $memcached->set($item);
-        trace_add("[rah_memcached: stored item '$name']");
+        $trace->log("[rah_memcached: saved '$name' to cache]");
     } catch (\Exception $e) {
-        trace_add("[rah_memcached: {$e->getMessage()}]");
+        $trace->log("[rah_memcached: failed to save '$name' to cache. Reason: {$e->getMessage()}]");
     }
 
     return $parsed;

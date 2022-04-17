@@ -46,7 +46,7 @@ final class Rah_Memcached_Server extends Rah_Memcached_AbstractServer
 
         $this
             ->setPrefix('rah:' . get_pref('siteurl'))
-            ->setLastmod(get_pref('lastmod'))
+            ->setLastmod((int) get_lastmod())
             ->setOptions([
                 Memcached::OPT_LIBKETAMA_COMPATIBLE => true,
             ]);

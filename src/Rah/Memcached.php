@@ -27,8 +27,8 @@
  * Configuration happens by defining few constants in config.php:
  *
  * ```
- * define('\RAH_MEMCACHED_HOST', 'localhost');
- * define('\RAH_MEMCACHED_PORT', 11211);
+ * define('RAH_MEMCACHED_HOST', 'localhost');
+ * define('RAH_MEMCACHED_PORT', 11211);
  * ```
  */
 final class Rah_Memcached
@@ -57,7 +57,7 @@ final class Rah_Memcached
 
         $this->setOptions($this->config->getOptions());
 
-        if ($this->config->getUser()) {
+        if ($this->config->getUsername()) {
             $this->cache->setOption(Memcached::OPT_BINARY_PROTOCOL, true);
 
             $this->cache->setSaslAuthData(
@@ -146,7 +146,9 @@ final class Rah_Memcached
         }, $servers));
 
         if ($status === false) {
-            throw new \Exception('Unable to add given servers to the pool.');
+            throw new \Exception(
+                $this->getErrorMessage('Unable to add given servers to the pool')
+            );
         }
 
         return $this;
@@ -161,13 +163,15 @@ final class Rah_Memcached
      */
     public function set(Rah_Memcached_Item $item)
     {
-        $item->setKey($this->config->getPrefix() . $this->getName());
+        $item->setKey($this->config->getPrefix() . $item->getName());
 
         if ($this->cache->set($item->getKey(), $item->getData(), $item->getExpires())) {
             return $this;
         }
 
-        throw new \Exception('Unable to set');
+        throw new \Exception(
+            $this->getErrorMessage('Adding item to Memcached failed')
+        );
     }
 
     /**
@@ -182,7 +186,9 @@ final class Rah_Memcached
         $data = $this->cache->get($this->config->getPrefix() . $key);
 
         if (!is_array($data)) {
-            throw new \Exception('Unable to get');
+            throw new \Exception(
+                $this->getErrorMessage('Getting item from Memcached failed')
+            );
         }
 
         return new Rah_Memcached_Item($data);
@@ -231,12 +237,27 @@ final class Rah_Memcached
     }
 
     /**
-     * Gets a message describing the result of the last operation.
+     * Gets an error message.
+     *
+     * @param string $message
      *
      * @return string
      */
-    public function getResultMessage(): string
+    private function getErrorMessage(string $message): string
     {
-        return $this->cache->getResultMessage();
+        $errorMessage = method_exists($this->cache, 'getLastErrorMessage')
+            ? $this->cache->getLastErrorMessage()
+            : $this->cache->getResultMessage();
+
+        $errorCode = method_exists($this->cache, 'getLastErrorCode')
+            ? $this->cache->getLastErrorCode()
+            : $this->cache->getResultCode();
+
+        return \sprintf(
+            "%s. Last Memcached operation result: %s: '%s'.",
+            $message,
+            $errorCode,
+            $errorMessage
+        );
     }
 }

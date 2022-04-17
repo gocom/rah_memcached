@@ -50,7 +50,7 @@ final class Rah_Memcached_Item
      */
     public function getVariables(): array
     {
-        return $this->getData('variables');
+        return $this->getData('variables') ?: [];
     }
 
     /**
@@ -62,6 +62,7 @@ final class Rah_Memcached_Item
     public function setVariables(array $variables)
     {
         $this->setData('variables', $variables);
+
         return $this;
     }
 
