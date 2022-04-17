@@ -82,7 +82,7 @@ Size: <txp:variable name="size" />
 
 h2. Changelog
 
-h3. Version 0.2.0 - upcoming
+h3. Version 0.2.0 - 2022/04/17
 
 * Register the tag for Textpattern >= 4.7.0 compatibility.
 * Replaced @lastmod@ attribute with @persist@.
