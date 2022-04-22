@@ -4,7 +4,7 @@
  * rah_memcached - Memcached templates for Textpattern CMS
  * https://github.com/gocom/rah_memcached
  *
- * Copyright (C) 2019 Jukka Svahn
+ * Copyright (C) 2022 Jukka Svahn
  *
  * This file is part of rah_memcached.
  *
@@ -59,7 +59,7 @@ final class Rah_Memcached_ItemIterator implements \Iterator
     /**
      * {@inheritdoc}
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->index = 0;
     }
@@ -69,7 +69,7 @@ final class Rah_Memcached_ItemIterator implements \Iterator
      *
      * @return Rah_Memcached_Item
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->memcached->get($this->keys[$this->index]);
     }
@@ -77,7 +77,7 @@ final class Rah_Memcached_ItemIterator implements \Iterator
     /**
      * {@inheritdoc}
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->index;
     }
@@ -85,7 +85,7 @@ final class Rah_Memcached_ItemIterator implements \Iterator
     /**
      * {@inheritdoc}
      */
-    public function next()
+    public function next(): void
     {
         $this->index++;
     }
@@ -93,7 +93,7 @@ final class Rah_Memcached_ItemIterator implements \Iterator
     /**
      * {@inheritdoc}
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->keys[$this->index]);
     }

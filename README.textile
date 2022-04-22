@@ -27,8 +27,8 @@ On subsequent calls the resulting output markup and variables will be loaded fro
 
 h2. Requirements
 
-* Textpattern 4.7.0 or newer.
-* PHP 7.1.0 or newer.
+* Textpattern >= 4.7.0.
+* PHP >= 8.1.0.
 * "Memcached":https://secure.php.net/manual/en/book.memcached.php PHP extension.
 * "libmemcached":https://libmemcached.org/ client library.
 * "Memcached":https://memcached.org/ server.
@@ -81,6 +81,11 @@ Color: <txp:variable name="color" />
 Size: <txp:variable name="size" />
 
 h2. Changelog
+
+h3. Version 0.3.0 - 2022/04/22
+
+* Fixes PHP >= 8.1 compatibility.
+* Now requires PHP >= 8.1.
 
 h3. Version 0.2.0 - 2022/04/17
 
